@@ -1,2 +1,1 @@
-# 嵌入式系統期末專題
-此為期末專題
+需要在esp-idf中執行:https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/windows-setup.html
