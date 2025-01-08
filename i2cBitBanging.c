@@ -112,8 +112,8 @@ int i2c_read_byte_temp(uint8_t reg, int i){
     break_flag = 0;
     printf("\n");
     while(!break_flag){
-    datapath1();
-    grafcet1();
+    datapath1();//sub-grafcet
+    grafcet1();//sub-grafcet
     printf("X20 = %d, X21 = %d, X22 = %d, X23 = %d\n", X0_3, X1_3, X2_3, X3_3);
     }
     return 0;
