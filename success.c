@@ -5,23 +5,23 @@
 #include "freertos/task.h"
 #include "esp_rom_sys.h"
 
-// ©w¸q I2C ±µ¸}»P MPU9250 ¦a§}
+// I2C Pin numberèˆ‡ MPU9250 åœ°å€
 #define I2C_SCL_PIN 21
 #define I2C_SDA_PIN 26
 #define MPU9250_SENSOR_ADDR 0x68
 #define I2C_MASTER_WRITE 0x00
 #define I2C_MASTER_READ 0x01
 
-// Grafcet ª¬ºAÅÜ¼Æ
+// Grafcet ç‹€æ…‹è®Šæ•¸
 int X0 = 1, X1 = 0, X1_1 = 0, X2 = 0, X0_3 = 1, X1_3 = 0, X2_3 = 0, X3_3 = 0;
 int R0 = 0, R1 = 0, R1_1 = 0, R2 = 0, R0_3 = 0, R1_3 = 0, R2_3 = 0, R3_3 = 0;
-int i = 0; // ¼È¦s¾¹Åª¨ú­p¼Æ
-uint8_t accel_data[6] = {0}; // ¥Î©ó«O¦s¥[³t«×­p¼Æ¾Ú
+int i = 0; // æš«å­˜å™¨è®€å–æ¬¡æ•¸
+uint8_t accel_data[6] = {0}; // ç”¨æ–¼ä¿å­˜XYZè»¸ä¸Šçš„æš«å­˜å™¨è³‡æ–™ã€‚
 uint8_t temp_data = 0;
 uint8_t* cur_accel_addr = NULL;
 int break_flag = 0;
 
-// ¨ç¼ÆÁn©ú
+
 void grafcet0();
 void datapath0();
 void action0();
@@ -71,7 +71,7 @@ int i2c_write_byte(uint8_t data)
     for (int i = 0; i < 8; i++) {
         gpio_set_level(I2C_SDA_PIN, (data >> (7 - i)) & 0x01);//MSB first
         esp_rom_delay_us(5);
-        gpio_set_level(I2C_SCL_PIN, 1);// ©Ô°ªSCL¡AÅı±q³]³ÆÅª¸ê®Æ
+        gpio_set_level(I2C_SCL_PIN, 1);// æ‹‰é«˜SCLï¼Œè®“å¾è¨­å‚™è®€è³‡æ–™
         esp_rom_delay_us(5);
         gpio_set_level(I2C_SCL_PIN, 0);
     }
@@ -84,45 +84,6 @@ int i2c_write_byte(uint8_t data)
     gpio_set_direction(I2C_SDA_PIN, GPIO_MODE_OUTPUT);
 
     return ack == 0 ? 0 : -1;
-}
-
-int i2c_read_byte(uint8_t reg, uint8_t *data)
-{
-    i2c_start();
-    if (i2c_write_byte(MPU9250_SENSOR_ADDR << 1 | I2C_MASTER_WRITE) != 0) {
-        i2c_stop();
-        return -1;
-    }
-
-    if (i2c_write_byte(reg) != 0) {
-        i2c_stop();
-        return -1;
-    }
-
-    i2c_start();
-    if (i2c_write_byte(MPU9250_SENSOR_ADDR << 1 | I2C_MASTER_READ) != 0) {
-        i2c_stop();
-        return -1;
-    }
-
-    gpio_set_direction(I2C_SDA_PIN, GPIO_MODE_INPUT);
-    *data = 0;
-    for (int i = 0; i < 8; i++) {
-        gpio_set_level(I2C_SCL_PIN, 1);
-        esp_rom_delay_us(5);
-        *data = (*data << 1) | gpio_get_level(I2C_SDA_PIN);
-        gpio_set_level(I2C_SCL_PIN, 0);
-        esp_rom_delay_us(5);
-    }
-
-    gpio_set_direction(I2C_SDA_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_level(I2C_SDA_PIN, 1);
-    gpio_set_level(I2C_SCL_PIN, 1);
-    esp_rom_delay_us(5);
-    gpio_set_level(I2C_SCL_PIN, 0);
-    i2c_stop();
-
-    return 0;
 }
 
 // Grafcet Actions
@@ -264,7 +225,7 @@ void read_mpu_register_action()
         if (i2c_read_byte_temp(0x3B + i, i) == 0) {
             i++;
             if (i == 6) {
-                R1_1 = 1; // ©Ò¦³±H¦s¾¹Åª¨ú§¹¦¨
+                R1_1 = 1;
             }
         } else {
             printf("Failed to read register 0x%X\n", 0x3B + i);
@@ -299,7 +260,7 @@ void grafcet0()
 
     if (X1_1 == 1 && R1_1) {
         if (i < 6) {
-            return; // Ä~ÄòÅª¨ú¼È¦s¾¹
+            return; // ç¹¼çºŒè®€å–æš«å­˜å™¨
         } else if (R1_1) {
             X1_1 = 0;
             X2 = 1;
