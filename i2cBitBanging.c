@@ -25,7 +25,6 @@ int break_flag = 0;
 void grafcet0();
 void datapath0();
 void action0();
-void i2c_init_action();
 void i2c_start_action();
 void read_mpu_start_action();
 void read_mpu_register_action();
@@ -94,10 +93,6 @@ void action0()
     R0 = 1;
 }
 
-void i2c_init_action()
-{
-    i2c_init();
-}
 
 void read_mpu_start_action()
 {
