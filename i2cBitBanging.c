@@ -70,7 +70,7 @@ int i2c_write_byte(uint8_t data)
     for (int i = 0; i < 8; i++) {
         gpio_set_level(I2C_SDA_PIN, (data >> (7 - i)) & 0x01);//MSB first
         esp_rom_delay_us(5);
-        gpio_set_level(I2C_SCL_PIN, 1);// 拉高SCL，讓從設備讀資料
+        gpio_set_level(I2C_SCL_PIN, 1);// 拉高SCL，讓slave讀資料
         esp_rom_delay_us(5);
         gpio_set_level(I2C_SCL_PIN, 0);
     }
